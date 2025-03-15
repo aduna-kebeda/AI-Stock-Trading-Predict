@@ -1,34 +1,51 @@
 "use client"
 
+import { useEffect, useState } from "react"
+import axios from "axios"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/app/components/ui/card"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts"
 
-const data = [
-  { name: "Jan", volume: 65000 },
-  { name: "Feb", volume: 59000 },
-  { name: "Mar", volume: 80000 },
-  { name: "Apr", volume: 81000 },
-  { name: "May", volume: 56000 },
-  { name: "Jun", volume: 55000 },
-  { name: "Jul", volume: 40000 },
-  { name: "Aug", volume: 94000 },
-  { name: "Sep", volume: 76000 },
-  { name: "Oct", volume: 67000 },
-  { name: "Nov", volume: 90000 },
-  { name: "Dec", volume: 120000 },
-]
-
 export function TradingVolume() {
+  const [volumeData, setVolumeData] = useState([])
+
+  useEffect(() => {
+    const fetchVolumeData = async () => {
+      try {
+        const response = await axios.get("https://api.coingecko.com/api/v3/coins/markets", {
+          params: {
+            vs_currency: 'usd',
+            order: 'market_cap_desc',
+            per_page: 10,
+            page: 1,
+            sparkline: false,
+          },
+        })
+        console.log("API Response:", response.data)
+        const data = response.data.map((coin: any) => ({
+          name: coin.name,
+          volume: coin.total_volume,
+        }))
+        console.log("Formatted Data:", data)
+        setVolumeData(data)
+      } catch (error) {
+        console.error("Error fetching volume data:", error)
+        
+    }
+    }
+
+    fetchVolumeData()
+  }, [])
+
   return (
     <Card className="bg-black border border-[#00FF00]/30">
       <CardHeader>
         <CardTitle className="text-white">Trading Volume</CardTitle>
-        <CardDescription className="text-[#00FF00]/70">Monthly trading volume in USD</CardDescription>
+        <CardDescription className="text-[#00FF00]/70">Top 10 cryptocurrencies by trading volume</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="h-[400px]">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data} barSize={20}>
+            <BarChart data={volumeData} barSize={20}>
               <CartesianGrid strokeDasharray="3 3" stroke="#222" />
               <XAxis dataKey="name" stroke="#AAA" />
               <YAxis stroke="#AAA" />

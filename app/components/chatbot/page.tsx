@@ -5,26 +5,80 @@ import { Button } from "@/app/components/ui/button"
 import { Input } from "@/app/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/app/components/ui/card"
 
-const mockAIResponse = (message: string) => {
-  // Mock AI response based on the user's message
-  if (message.toLowerCase().includes("recommend")) {
-    return "I recommend buying Bitcoin (BTC) as it shows a positive trend."
-  }
-  return "I'm here to help with your stock trading predictions. Ask me anything!"
+enum ConversationState {
+  INITIAL,
+  WAITING_FOR_NAME_EMAIL,
+  WAITING_FOR_QUERY,
+  WAITING_FOR_BITCOIN_PRICE,
 }
 
 export function Chatbot() {
   const [messages, setMessages] = useState<{ user: string; bot: string }[]>([])
   const [input, setInput] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [conversationState, setConversationState] = useState<ConversationState>(ConversationState.INITIAL)
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (input.trim() === "") return
 
     const userMessage = input
-    const botResponse = mockAIResponse(userMessage)
-
-    setMessages([...messages, { user: userMessage, bot: botResponse }])
+    setMessages([...messages, { user: userMessage, bot: "..." }])
     setInput("")
+    setLoading(true)
+
+    try {
+      const res = await fetch("https://habesha.app.n8n.cloud/webhook/bitcoin-chat-webhook/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: userMessage,
+        }),
+      })
+      const data = await res.json()
+      console.log("API Response:", data)
+
+      if (data && data.output) {
+        setMessages((prevMessages) => {
+          const newMessages = [...prevMessages]
+          newMessages[newMessages.length - 1].bot = data.output
+          console.log("Updated Messages:", newMessages)
+          return newMessages
+        })
+
+        // Update conversation state based on the response and user input
+        if (data.output.includes("<waiting_for_user_input/>")) {
+          if (conversationState === ConversationState.INITIAL) {
+            setConversationState(ConversationState.WAITING_FOR_NAME_EMAIL)
+          } else if (conversationState === ConversationState.WAITING_FOR_NAME_EMAIL) {
+            setConversationState(ConversationState.WAITING_FOR_QUERY)
+          }
+        } else if (userMessage.toLowerCase().includes("bitcoin")) {
+          setConversationState(ConversationState.WAITING_FOR_BITCOIN_PRICE)
+        } else if (userMessage.toLowerCase().includes("email")) {
+          setConversationState(ConversationState.WAITING_FOR_NAME_EMAIL)
+        } else {
+          setConversationState(ConversationState.WAITING_FOR_QUERY)
+        }
+      } else {
+        console.error("Invalid response format:", data)
+        setMessages((prevMessages) => {
+          const newMessages = [...prevMessages]
+          newMessages[newMessages.length - 1].bot = "Invalid response format."
+          return newMessages
+        })
+      }
+    } catch (error) {
+      console.error("Error triggering workflow:", error)
+      setMessages((prevMessages) => {
+        const newMessages = [...prevMessages]
+        newMessages[newMessages.length - 1].bot = "Error processing your message."
+        return newMessages
+      })
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -48,8 +102,8 @@ export function Chatbot() {
             placeholder="Type a message..."
             className="flex-1 bg-black border-[#00FF00]/30 text-white"
           />
-          <Button onClick={handleSend} className="bg-[#00FF00] text-black">
-            Send
+          <Button onClick={handleSend} className="bg-[#00FF00] text-black" disabled={loading}>
+            {loading ? "Sending..." : "Send"}
           </Button>
         </div>
       </CardContent>

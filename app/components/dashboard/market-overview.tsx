@@ -1,20 +1,42 @@
 "use client"
 
+import { useEffect, useState } from "react"
+import axios from "axios"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/app/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/components/ui/tabs"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts"
 
-const data = [
-  { name: "00:00", BTC: 42000, ETH: 2800, SOL: 120 },
-  { name: "04:00", BTC: 43500, ETH: 2850, SOL: 125 },
-  { name: "08:00", BTC: 43200, ETH: 2830, SOL: 123 },
-  { name: "12:00", BTC: 44000, ETH: 2900, SOL: 130 },
-  { name: "16:00", BTC: 45000, ETH: 3000, SOL: 135 },
-  { name: "20:00", BTC: 44800, ETH: 2950, SOL: 132 },
-  { name: "24:00", BTC: 45500, ETH: 3050, SOL: 138 },
-]
-
 export function MarketOverview() {
+  const [cryptoData, setCryptoData] = useState([])
+
+  useEffect(() => {
+    const fetchCryptoData = async () => {
+      try {
+        const response = await axios.get("https://api.coincap.io/v2/assets", {
+          params: {
+            limit: 10,
+          },
+        })
+        console.log("API Response:", response.data)
+        const data = response.data.data.map((coin: any) => ({
+          name: coin.name,
+          price: parseFloat(coin.priceUsd),
+        }))
+        console.log("Formatted Data:", data)
+        setCryptoData(data)
+      } catch (error) {
+        console.error("Error fetching crypto data:", error)
+        
+      }
+    }
+
+    fetchCryptoData()
+  }, [])
+
+  useEffect(() => {
+    console.log("Crypto Data State:", cryptoData)
+  }, [cryptoData])
+
   return (
     <Card className="bg-black border border-border">
       <CardHeader>
@@ -46,7 +68,7 @@ export function MarketOverview() {
           <TabsContent value="crypto">
             <div className="h-[400px]">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={data}>
+                <LineChart data={cryptoData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#333" />
                   <XAxis dataKey="name" stroke="#888" />
                   <YAxis stroke="#888" />
@@ -59,24 +81,8 @@ export function MarketOverview() {
                   <Legend />
                   <Line
                     type="monotone"
-                    dataKey="BTC"
+                    dataKey="price"
                     stroke="#f7931a"
-                    strokeWidth={2}
-                    dot={false}
-                    activeDot={{ r: 6 }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="ETH"
-                    stroke="#627eea"
-                    strokeWidth={2}
-                    dot={false}
-                    activeDot={{ r: 6 }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="SOL"
-                    stroke="#00ff00"
                     strokeWidth={2}
                     dot={false}
                     activeDot={{ r: 6 }}
