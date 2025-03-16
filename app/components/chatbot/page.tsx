@@ -22,60 +22,42 @@ export function Chatbot() {
     if (input.trim() === "") return
 
     const userMessage = input
-    setMessages([...messages, { user: userMessage, bot: "..." }])
+    setMessages((prev) => [...prev, { user: userMessage, bot: "..." }])
     setInput("")
     setLoading(true)
 
     try {
-      const res = await fetch("https://habesha.app.n8n.cloud/webhook/bitcoin-chat-webhook/chat", {
+      const res = await fetch("https://data-analist-agent.onrender.com/api/query", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          message: userMessage,
+          query: userMessage,
+          symbol: "TSLA", // Change as needed
+          period: "6mo",   // Change as needed
         }),
       })
+
+      if (!res.ok) throw new Error(`Failed to fetch response: ${res.statusText}`)
+
       const data = await res.json()
       console.log("API Response:", data)
 
-      if (data && data.output) {
-        setMessages((prevMessages) => {
-          const newMessages = [...prevMessages]
-          newMessages[newMessages.length - 1].bot = data.output
-          console.log("Updated Messages:", newMessages)
-          return newMessages
-        })
+      const botReply = data.response || "Sorry, I couldn't understand that."
 
-        // Update conversation state based on the response and user input
-        if (data.output.includes("<waiting_for_user_input/>")) {
-          if (conversationState === ConversationState.INITIAL) {
-            setConversationState(ConversationState.WAITING_FOR_NAME_EMAIL)
-          } else if (conversationState === ConversationState.WAITING_FOR_NAME_EMAIL) {
-            setConversationState(ConversationState.WAITING_FOR_QUERY)
-          }
-        } else if (userMessage.toLowerCase().includes("bitcoin")) {
-          setConversationState(ConversationState.WAITING_FOR_BITCOIN_PRICE)
-        } else if (userMessage.toLowerCase().includes("email")) {
-          setConversationState(ConversationState.WAITING_FOR_NAME_EMAIL)
-        } else {
-          setConversationState(ConversationState.WAITING_FOR_QUERY)
-        }
-      } else {
-        console.error("Invalid response format:", data)
-        setMessages((prevMessages) => {
-          const newMessages = [...prevMessages]
-          newMessages[newMessages.length - 1].bot = "Invalid response format."
-          return newMessages
-        })
-      }
+      setMessages((prev) =>
+        prev.map((msg, index) =>
+          index === prev.length - 1 ? { ...msg, bot: botReply } : msg
+        )
+      )
     } catch (error) {
-      console.error("Error triggering workflow:", error)
-      setMessages((prevMessages) => {
-        const newMessages = [...prevMessages]
-        newMessages[newMessages.length - 1].bot = "Error processing your message."
-        return newMessages
-      })
+      console.error("Error fetching response:", error)
+      setMessages((prev) =>
+        prev.map((msg, index) =>
+          index === prev.length - 1 ? { ...msg, bot: "Error fetching response." } : msg
+        )
+      )
     } finally {
       setLoading(false)
     }

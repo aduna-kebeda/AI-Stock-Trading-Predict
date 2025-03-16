@@ -5,8 +5,15 @@ try {
   // ignore error
 }
 
-/** @type {import('next').NextConfig} */
 const nextConfig = {
+  async rewrites() {
+    return [
+      {
+        source: '/api/query',
+        destination: 'https://data-analist-agent.onrender.com/api/query',
+      },
+    ]
+  },
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -45,4 +52,4 @@ function mergeConfig(nextConfig, userConfig) {
   }
 }
 
-export default nextConfig
+export default nextConfig 
