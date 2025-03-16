@@ -27,6 +27,9 @@ export default function NewsPage() {
       setIsLoading(true)
       try {
         const response = await axios.get("https://newsapi.org/v2/everything", {
+          headers: {
+            "User-Agent": "Mozilla/5.0",
+          },
           params: {
             q: "market",
             apiKey: "60d06596928d4201bbd6b51fec4f5b3b", // Replace with your NewsAPI key
