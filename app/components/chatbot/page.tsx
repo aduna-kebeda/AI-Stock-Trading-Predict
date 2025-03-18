@@ -27,7 +27,7 @@ export function Chatbot() {
     setLoading(true)
 
     try {
-      const res = await fetch("https://cors-anywhere.herokuapp.com/https://data-analist-agent.onrender.com/api/query", {
+      const res = await fetch("https://data-analist-agent.onrender.com/api/query", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
