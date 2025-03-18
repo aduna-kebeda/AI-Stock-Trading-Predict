@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { LineChart, Settings, Bell, Home, PieChart, Wallet, Zap, History, BookOpen } from "lucide-react"
+import { LineChart, Settings, Bell, Home, PieChart, Wallet, Zap, History, BookOpen, Mail } from "lucide-react"
 
 import {
   Sidebar,
@@ -67,47 +67,9 @@ export function DashboardSidebar() {
             </SidebarMenuButton>
           </SidebarMenuItem>
 
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              isActive={pathname === "/dashboard/portfolio"}
-              tooltip="Portfolio"
-              className={`text-white hover:text-[#00FF00] hover:bg-[#00FF00]/10 ${pathname === "/dashboard/portfolio" ? "bg-[#00FF00] text-black" : ""}`}
-            >
-              <Link href="/dashboard/portfolio">
-                <PieChart className="mr-2" />
-                <span>Portfolio</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          
 
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              isActive={pathname === "/dashboard/wallet"}
-              tooltip="Wallet"
-              className={`text-white hover:text-[#00FF00] hover:bg-[#00FF00]/10 ${pathname === "/dashboard/wallet" ? "bg-[#00FF00] text-black" : ""}`}
-            >
-              <Link href="/dashboard/wallet">
-                <Wallet className="mr-2" />
-                <span>Wallet</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              isActive={pathname === "/dashboard/history"}
-              tooltip="Trade History"
-              className={`text-white hover:text-[#00FF00] hover:bg-[#00FF00]/10 ${pathname === "/dashboard/history" ? "bg-[#00FF00] text-black" : ""}`}
-            >
-              <Link href="/dashboard/history">
-                <History className="mr-2" />
-                <span>Trade History</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          
 
           <SidebarMenuItem>
             <SidebarMenuButton
@@ -119,6 +81,20 @@ export function DashboardSidebar() {
               <Link href="/dashboard/news">
                 <BookOpen className="mr-2" />
                 <span>Market News</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              isActive={pathname === "/dashboard/email-report"}
+              tooltip="Email Report"
+              className={`text-white hover:text-[#00FF00] hover:bg-[#00FF00]/10 ${pathname === "/dashboard/email-report" ? "bg-[#00FF00] text-black" : ""}`}
+            >
+              <Link href="/dashboard/email-report">
+                <Mail className="mr-2" />
+                <span>Email Report</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

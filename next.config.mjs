@@ -16,6 +16,10 @@ const nextConfig = {
         source: '/api/news',
         destination: 'https://newsapi.org/v2/everything',
       },
+      {
+        source: '/api/reports/email',
+        destination: 'https://data-analist-agent.onrender.com/api/reports/email',
+      },
     ]
   },
   eslint: {

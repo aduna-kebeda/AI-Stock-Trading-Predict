@@ -21,12 +21,13 @@ export default function DashboardLayout({
         <div className="flex flex-col flex-1 overflow-hidden">
           <header className="border-b border-[#00FF00]/30 bg-black h-16 flex items-center px-6 justify-between">
             <h1 className="text-xl font-bold text-[#00FF00]">Dashboard</h1>
-            <div className="flex items-center mr-7 space-x-4">
+            <div className="flex items-center mr-10 space-x-4">
               <button
                 className="text-white hover:text-[#00FF00] flex items-center"
                 onClick={() => setIsChatbotOpen((prev) => !prev)}
               >
-                <MessageCircle className="w-6 h-6" />
+                <p className="mr-6">Chatbot</p>
+                
               </button>
               <UserNav />
             </div>

@@ -1,20 +1,22 @@
-"use client"
+'use client'
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/app/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/app/components/ui/select"
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts"
 
 const data = [
-  { date: "2023-03-01", actual: 42000, predicted: 42100 },
-  { date: "2023-03-02", actual: 43500, predicted: 43200 },
-  { date: "2023-03-03", actual: 43200, predicted: 43800 },
-  { date: "2023-03-04", actual: 44000, predicted: 44200 },
-  { date: "2023-03-05", actual: 45000, predicted: 44800 },
-  { date: "2023-03-06", actual: 44800, predicted: 45500 },
-  { date: "2023-03-07", actual: 45500, predicted: 46000 },
-  { date: "2023-03-08", actual: null, predicted: 46500 },
-  { date: "2023-03-09", actual: null, predicted: 47000 },
-  { date: "2023-03-10", actual: null, predicted: 47200 },
+  
+
+  { date: "2025-03-13", actual: 43200, predicted: 43800 },
+  { date: "2025-03-14", actual: 44000, predicted: 44200 },
+  { date: "2025-03-15", actual: 45000, predicted: 44800 },
+  { date: "2025-03-16", actual: 44800, predicted: 45500 },
+  { date: "2025-03-17", actual: 45500, predicted: 46000 },
+  { date: "2025-03-18", actual: 45500, predicted: 46000 },
+  { date: "2025-03-19", actual: 42000, predicted: 42100 },
+  { date: "2025-03-20", actual: null, predicted: 46500 },
+  { date: "2025-03-21", actual: null, predicted: 47000 },
+  { date: "2025-03-22", actual: null, predicted: 47200 },
 ]
 
 export default function PredictionsPage() {
