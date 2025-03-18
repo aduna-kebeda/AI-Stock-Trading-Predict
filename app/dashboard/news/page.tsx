@@ -26,7 +26,7 @@ export default function NewsPage() {
     const fetchNews = async () => {
       setIsLoading(true)
       try {
-        const response = await axios.get("https://newsapi.org/v2/everything", {
+        const response = await axios.get("/api/news", {
           headers: {
             "User-Agent": "Mozilla/5.0",
           },

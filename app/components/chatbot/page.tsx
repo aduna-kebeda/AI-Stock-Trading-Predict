@@ -36,7 +36,7 @@ export function Chatbot() {
         body: JSON.stringify({
           query: userMessage,
           symbol: symbol,
-          period: "6mo", // Fixed period value
+          period: "6mo",
         }),
       })
 
@@ -71,13 +71,17 @@ export function Chatbot() {
       </CardHeader>
       <CardContent className="flex flex-col space-y-4">
         {/* Chat Messages */}
-        <div className="flex-1 overflow-y-auto max-h-64 space-y-2 bg-gray-900 p-2 rounded-md">
+        <div className="flex-1 overflow-y-auto max-h-64 space-y-4 bg-gray-900 p-4 rounded-md">
           {messages.map((msg, index) => (
-            <div key={index} className="space-y-1">
-              <div className="text-white font-bold">User:</div>
-              <div className="text-white">{msg.user}</div>
-              <div className="text-blue-500 font-bold">Bot:</div>
-              <div className="text-blue-500">{msg.bot}</div>
+            <div key={index} className="space-y-2">
+              <div className="flex items-start">
+                <div className="text-white font-bold min-w-[60px]">User:</div>
+                <div className="text-white flex-1 break-words">{msg.user}</div>
+              </div>
+              <div className="flex items-start">
+                <div className="text-blue-500 font-bold min-w-[60px]">Bot:</div>
+                <div className="text-blue-500 flex-1 break-words">{msg.bot}</div>
+              </div>
             </div>
           ))}
         </div>
@@ -99,7 +103,11 @@ export function Chatbot() {
         </div>
 
         {/* Send Button */}
-        <Button onClick={handleSend} className="w-full bg-[#00FF00] text-black py-2 text-lg" disabled={loading}>
+        <Button 
+          onClick={handleSend} 
+          className="w-full bg-[#00FF00] text-black py-2 text-lg" 
+          disabled={loading}
+        >
           {loading ? "Sending..." : "Send"}
         </Button>
       </CardContent>

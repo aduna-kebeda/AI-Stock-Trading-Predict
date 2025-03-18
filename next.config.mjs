@@ -12,6 +12,10 @@ const nextConfig = {
         source: '/api/query',
         destination: 'https://data-analist-agent.onrender.com/api/query',
       },
+      {
+        source: '/api/news',
+        destination: 'https://newsapi.org/v2/everything',
+      },
     ]
   },
   eslint: {
@@ -52,4 +56,4 @@ function mergeConfig(nextConfig, userConfig) {
   }
 }
 
-export default nextConfig 
+export default nextConfig
