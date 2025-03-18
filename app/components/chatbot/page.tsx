@@ -15,11 +15,12 @@ enum ConversationState {
 export function Chatbot() {
   const [messages, setMessages] = useState<{ user: string; bot: string }[]>([])
   const [input, setInput] = useState("")
+  const [symbol, setSymbol] = useState("")
   const [loading, setLoading] = useState(false)
   const [conversationState, setConversationState] = useState<ConversationState>(ConversationState.INITIAL)
 
   const handleSend = async () => {
-    if (input.trim() === "") return
+    if (input.trim() === "" || symbol.trim() === "") return
 
     const userMessage = input
     setMessages((prev) => [...prev, { user: userMessage, bot: "..." }])
@@ -27,15 +28,15 @@ export function Chatbot() {
     setLoading(true)
 
     try {
-      const res = await fetch("https://data-analist-agent.onrender.com/api/query", {
+      const res = await fetch("/api/query", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           query: userMessage,
-          symbol: "TSLA", // Change as needed
-          period: "6mo",   // Change as needed
+          symbol: symbol,
+          period: "6mo", // Fixed period value
         }),
       })
 
@@ -64,30 +65,43 @@ export function Chatbot() {
   }
 
   return (
-    <Card className="fixed bottom-4 right-4 w-80 bg-black border border-[#00FF00]/30">
+    <Card className="w-96 bg-black border border-[#00FF00]/30 p-4">
       <CardHeader>
-        <CardTitle className="text-[#00FF00]">AI Chatbot</CardTitle>
+        <CardTitle className="text-[#00FF00] text-lg">AI Chatbot</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col space-y-4">
-        <div className="flex-1 overflow-y-auto max-h-64 space-y-2">
+        {/* Chat Messages */}
+        <div className="flex-1 overflow-y-auto max-h-64 space-y-2 bg-gray-900 p-2 rounded-md">
           {messages.map((msg, index) => (
             <div key={index} className="space-y-1">
-              <div className="text-white">User: {msg.user}</div>
-              <div className="text-[#00FF00]">Bot: {msg.bot}</div>
+              <div className="text-white font-bold">User:</div>
+              <div className="text-white">{msg.user}</div>
+              <div className="text-blue-500 font-bold">Bot:</div>
+              <div className="text-blue-500">{msg.bot}</div>
             </div>
           ))}
         </div>
-        <div className="flex space-x-2">
+
+        {/* Input Fields */}
+        <div className="space-y-3">
+          <Input
+            value={symbol}
+            onChange={(e) => setSymbol(e.target.value)}
+            placeholder="Enter stock symbol..."
+            className="w-full bg-black border-[#00FF00]/30 text-white"
+          />
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Type a message..."
-            className="flex-1 bg-black border-[#00FF00]/30 text-white"
+            placeholder="Type your message..."
+            className="w-full bg-black border-[#00FF00]/30 text-white"
           />
-          <Button onClick={handleSend} className="bg-[#00FF00] text-black" disabled={loading}>
-            {loading ? "Sending..." : "Send"}
-          </Button>
         </div>
+
+        {/* Send Button */}
+        <Button onClick={handleSend} className="w-full bg-[#00FF00] text-black py-2 text-lg" disabled={loading}>
+          {loading ? "Sending..." : "Send"}
+        </Button>
       </CardContent>
     </Card>
   )
